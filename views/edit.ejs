@@ -3,15 +3,15 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Edit Tweet</title>
+    <title>Edit Chat</title>
 </head>
 <body>
-    <h2>Edit Tweet</h2>
-    <p>post id:<%= post.id %> </p>
-    <p>post username: <%= post.username %></p>
-    <form method="post" action="/posts/<%= post.id %>?_method=PATCH">   
-        <textarea rows="10" cols="25" name="content"><%= post.content %></textarea>
-        <button >Update</button>
+    <h3>Edit Chat :<%= chat._id %></h3>
+    <p> This Chat Was Sent From :<%= chat.from %>  to <%= chat.to %></p>
+    <form method="post" action="/chats/<%= chat._id %>?_method=put">
+        <textarea name="msg" rows="10" cols="10"><%= chat.msg %></textarea>
+        <br>
+        <button>Edit</button>
     </form>
 </body>
 </html>

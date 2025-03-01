@@ -3,27 +3,37 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>All Tweets</title>
-    <link rel="stylesheet" href="/styles.css">
+    <title>Mini WhatsApp</title>
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <h1>All Tweets</h1>
-    <% for (post of posts) { %>
-        <div class="post">
-            <h3 class="user">@<%= post.username %></h3>
-            <h4><%= post.content %></h4>
+    <h3>All Chats History</h3>
+    <hr>
+    <form method="GET" action="/chats/new">
+        <button>New Chat</button>
+    </form>
+    
+        <%for(let chat of chats) {%>
+        <div class="chat">
+            <p>From: <%= chat.from %></p>
+            <div class="msg">
+                <form method="get" action="/chats/<%=chat._id%>/edit">
+                    <button>Edit</button>
+                </form>
+                <p>Message:<%= chat.message%></p>
+            </div>
+            
+            <recieved>Recieved by:<%= chat.to%></recieved>
+            <hr>
+            <p> <%= chat.createdAt.toString().split(" ")[4]%></p>
+            <p><%= chat.createdAt.toString().split(" ").slice(0,4).join(" ") %></p>
             <br>
-            <br>
-            <a href="http://localhost:8080/posts/<%= post.id %>">View Tweet</a> 
-            <br>
-            <a href="http://localhost:8080/posts/<%= post.id %>/edit">Edit Tweet</a> 
-            <br>
-            <form method="post" action="http://localhost:8080/posts/<%= post.id %>?_method=DELETE">
+            <form method="post" action="/chats/<%=chat._id%>?_method=DELETE">
                 <button>Delete</button>
             </form>
-            <!-- ✅ Absolute URL -->
         </div>
-    <% } %>
-    <a href="http://localhost:8080/posts/new">New Tweet</a>  <!-- ✅ Absolute URL -->
+        <hr>
+    <%}%>
+
 </body>
 </html>
