@@ -3,26 +3,27 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Instagram Clone</title>
+    <title>All Tweets</title>
     <link rel="stylesheet" href="/styles.css">
 </head>
 <body>
-    <header>
-        <h1>Instagram Clone</h1>
-    </header>
-    
-    <main>
-        <% posts.forEach(post => { %>
-            <div class="post">
-                <div class="post-header">
-                    <img src="<%= post.userAvatar %>" class="avatar" alt="User Avatar">
-                    <h2><%= post.username %></h2>
-                </div>
-                <img src="<%= post.imageUrl %>" class="post-image" alt="Post Image">
-                <p><strong><%= post.username %></strong> <%= post.caption %></p>
-                <p>❤️ <%= post.likes %> likes</p>
-            </div>
-        <% }) %>
-    </main>
+    <h1>All Tweets</h1>
+    <% for (post of posts) { %>
+        <div class="post">
+            <h3 class="user">@<%= post.username %></h3>
+            <h4><%= post.content %></h4>
+            <br>
+            <br>
+            <a href="http://localhost:8080/posts/<%= post.id %>">View Tweet</a> 
+            <br>
+            <a href="http://localhost:8080/posts/<%= post.id %>/edit">Edit Tweet</a> 
+            <br>
+            <form method="post" action="http://localhost:8080/posts/<%= post.id %>?_method=DELETE">
+                <button>Delete</button>
+            </form>
+            <!-- ✅ Absolute URL -->
+        </div>
+    <% } %>
+    <a href="http://localhost:8080/posts/new">New Tweet</a>  <!-- ✅ Absolute URL -->
 </body>
 </html>

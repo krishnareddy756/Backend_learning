@@ -1,0 +1,15 @@
+h1{
+    color: maroon;
+}
+.post{
+    background-color: skyblue;
+}
+.user{
+    background-color: lightgreen;
+    font-style: italic;
+}
+a{
+    color: blue;
+    text-decoration: none;
+
+}

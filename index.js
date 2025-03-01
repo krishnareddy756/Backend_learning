@@ -1,122 +1,71 @@
-const { faker, tr } = require('@faker-js/faker');
-const mysql = require('mysql2');
+const exp = require('constants');
 const express=require('express');
-const app=express();
-const path=require('path');
+const { v4: uuidv4 } = require('uuid');
 const methodOverride = require('method-override');
+
+const app=express();
+const port=8080;
+const path=require('path');
 app.use(methodOverride('_method'));
 app.use(express.urlencoded({extended:true}));
-app.set('view engine', 'ejs');
-app.set("views",path.join(__dirname,"/views"));
+app.set('view engine','ejs');
+app.set('views',path.join(__dirname,'views'));
+app.use(express.static('public'));
+app.use(express.static(path.join(__dirname,'public')));
+let posts=[
+    {
+        id:uuidv4(),
+        username:'cherprang',
+        content:'Life’s a game of WiFi signals—sometimes strong, mostly unstable. 📶😅',
+    },
+    {
+        id:uuidv4(),
+        username:'music',
+        content:'My bank account and my phone battery have one thing in common: always low.🔋💸',
+    },
+    {
+        id:uuidv4(),
+        username:'cher',
+        content:'Some people run on caffeine, I run on sheer panic and deadlines. ⏳☕',
+    },
+];
 
-const connection = mysql.createConnection({
-    host: 'localhost',
-    user: 'root',
-    database: 'delta_app',
-    password: 'Welcome@16$'
-  });
-  let  getRandomUser =()=> {
-    return [
-      faker.string.uuid(),
-      faker.internet.username(), // before version 9.1.0, use userName()
-      faker.internet.email(),
-      faker.internet.password(),
-    ];
-  }; 
-//home page
-app.get('/',(req,res)=>{  
-  let q="select count(*) from users";
-  try {
-  connection.query(q, (err, results )=> {
-      if (err) throw err;
-      let q=results[0]['count(*)'];
-      res.render("home.ejs",{count:q});
-      });
-      } catch (error) {
-        console.log(error);
-        res.send("Error");
-       }
-});  
-
-//show all users
-app.get('/users',(req,res)=>{  
-  let q="select * from users";
-  try {
-  
-  connection.query(q, (err, results )=> {
-      if (err) throw err;
-      //console.log(results);
-      res.render("showusers.ejs",{users:results});
-      //res.render("users.ejs",{users:results});
-      });
-      } catch (error) {
-        console.log(error);
-        res.send("Error");
-       }
+app.get('/posts',(req,res)=>{
+    res.render('index.ejs',{posts:posts});
 });
-//edit route
-app.get('/user/:id/edit',(req,res)=>{ 
-  let {id}=req.params;
-  let q=`select * from users where id='${id}'`;
-  try {
-  
-    connection.query(q, (err, results )=> {
-        if (err) throw err;
-        let user=results[0];
-        console.log(results);
-        res.render("edit.ejs",{user:user});
-        //res.render("users.ejs",{users:results});
-        });
-        } catch (error) {
-          console.log(error);
-          res.send("Error");
-         }
-  });
-
-// Update route
-// Update user route
-app.patch('/user/:id', (req, res) => { 
-  let { id } = req.params;
-  let { password: formPass, username: newUsername } = req.body;
-
-  let q = `SELECT * FROM users WHERE id = ?`; // Use parameterized query
-  connection.query(q, [id], (err, results) => {
-      if (err) {
-          console.log(err);
-          return res.send("Error retrieving user");
-      }
-
-      if (results.length === 0) {
-          return res.send("User not found"); // ✅ Return immediately
-      }
-
-      let user = results[0];
-
-      if (formPass !== user.password) {
-          return res.send("Password does not match"); // ✅ Return immediately
-      }
-
-      let q2 = `UPDATE users SET username = ? WHERE id = ?`;
-      connection.query(q2, [newUsername, id], (err, results) => {
-          if (err) {
-              console.log(err);
-              return res.send("Error updating user");
-          }
-
-          res.redirect('/users'); // ✅ Redirecting correctly
-      });
-  });
+app.get('/posts/new',(req,res)=>{
+    res.render('new.ejs');
+});
+app.post('/posts', (req, res) => {
+    let { username, content } = req.body;
+    posts.push({ id: uuidv4(), username, content }); // ✅ Add id
+    res.redirect('/posts');
 });
 
-app.listen(8080,()=>{ 
-    console.log("Server is running on port 8080");
+app.get('/posts/:id',(req,res)=>{
+    let {id}=req.params;
+    let post=posts.find((p)=>id==p.id);
+    res.render('show.ejs',{post});
+   
 });
-// try {
-//   connection.query(q,[data],  (err, results )=> {
-//       if (err) throw err;
-//       console.log(results);
-//       });
-// } catch (error) {
-//   console.log(error);
-// }
- 
+app.patch('/posts/:id',(req,res)=>{
+    let {id}=req.params;
+    
+    let newContent=req.body.content;
+    let post=posts.find((p)=>id==p.id);
+    res.redirect('/posts');
+    
+});
+app.get('/posts/:id/edit',(req,res)=>{
+    let {id}=req.params;
+    let post=posts.find((p)=>id==p.id);
+    res.render('edit.ejs',{post});
+});
+app.delete('/posts/:id',(req,res)=>{    
+    let {id}=req.params;
+    posts=posts.filter((p)=>id!=p.id);
+    res.redirect('/posts');
+});
+app.listen(port,()=>{    
+    console.log(`Server is running at http://localhost:${port}`);
+});

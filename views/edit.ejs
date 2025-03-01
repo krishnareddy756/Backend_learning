@@ -3,18 +3,15 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Editing</title>
+    <title>Edit Tweet</title>
 </head>
 <body>
-    <h2>You are editing user with email: <%= user.email %></h2> <!-- Fixed this text -->
-    <form method="post" action="/user/<%= user.id %>?_method=PATCH">
-        <label>Username:</label>
-        <textarea name="username"><%= user.username %></textarea>
-        <br>
-        <label>Password:</label>
-        <input type="password" name="password" placeholder="Enter your new password">
-        <br>
-        <button type="submit">Submit</button>
+    <h2>Edit Tweet</h2>
+    <p>post id:<%= post.id %> </p>
+    <p>post username: <%= post.username %></p>
+    <form method="post" action="/posts/<%= post.id %>?_method=PATCH">   
+        <textarea rows="10" cols="25" name="content"><%= post.content %></textarea>
+        <button >Update</button>
     </form>
 </body>
 </html>
