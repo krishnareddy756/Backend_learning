@@ -1,16 +1,24 @@
-const express=require('express');
-const app=express();
-const port=8080;
-app.listen(port,()=>{   console.log(`Server is running on port ${port}`);}  );
-// app.use((req,res)=>{
-//     console.log('message received'); 
-//     res.send('Hello World');
-// })
-app.get('/users/:id', (req, res) => {
-    const userId = req.params.id;
-    res.send(`User ID: ${userId}`);
+const express = require('express');
+const app = express();
+
+app.set('view engine', 'ejs');
+app.use(express.static('public'));
+
+const posts = [
+    { username: "john_doe", userAvatar: "/avatar1.jpg", imageUrl: "/post1.jpg", caption: "Beautiful day!", likes: 120 },
+    { username: "jane_doe", userAvatar: "/avatar2.jpg", imageUrl: "/post2.jpg", caption: "Enjoying my coffee ☕", likes: 200 }
+];
+
+app.get('/', (req, res) => {
+    res.render('index', { posts });
 });
-app.get('/search', (req, res) => {
-    const query = req.query;
-    res.send(`Search Query: ${query}`);
+
+app.get('/login', (req, res) => {
+    res.render('login');
 });
+
+app.get('/register', (req, res) => {
+    res.render('register');
+});
+
+app.listen(3000, () => console.log('Server running on http://localhost:3000'));
